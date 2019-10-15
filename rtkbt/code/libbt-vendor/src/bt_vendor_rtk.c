@@ -400,7 +400,8 @@ static int op(bt_vendor_opcode_t opcode, void *param)
     {
         case BT_VND_OP_POWER_CTRL:
             {
-                if(rtkbt_transtype & RTKBT_TRANS_UART) {
+                //if(rtkbt_transtype & RTKBT_TRANS_UART)
+                {
                     int *state = (int *) param;
                     if (*state == BT_VND_PWR_OFF)
                     {
@@ -414,8 +415,11 @@ static int op(bt_vendor_opcode_t opcode, void *param)
                         usleep(200000);
                         BTVNDDBG("set power off and delay 200ms");
                         upio_set_bluetooth_power(UPIO_BT_POWER_ON);
-                        //usleep(200000);
-                        BTVNDDBG("set power on and delay 00ms");
+                        if(rtkbt_transtype & RTKBT_TRANS_UART)
+                            usleep(200000);
+                        else
+                            usleep(1000000);
+                        BTVNDDBG("set power on and delay 1000ms");
                     }
                 }
             }
