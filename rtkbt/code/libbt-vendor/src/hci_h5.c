@@ -401,7 +401,7 @@ static void H5LogMsg(const char *fmt_str, ...)
 static void rtkbt_h5_send_hw_error()
 {
     unsigned char p_buf[100];
-    const char *str = "host stack: h5 send error";
+    const char *str = "host stack: h5 send error\n";
     int length = strlen(str) + 1 + 4;
     p_buf[0] = HCIT_TYPE_EVENT;//event
     p_buf[1] = HCI_VSE_SUBCODE_DEBUG_INFO_SUB_EVT;//firmwre event log
@@ -414,7 +414,7 @@ static void rtkbt_h5_send_hw_error()
     p_buf[0] = HCIT_TYPE_EVENT;//event
     p_buf[1] = HCI_HARDWARE_ERROR_EVT;//hardware error
     p_buf[2] = 0x01;//len
-    p_buf[3] = 0xfb;//h5 error code
+    p_buf[3] = H5_HWERR_CODE_RTK;//h5 error code
     userial_recv_rawdata_hook(p_buf,length);
 }
 

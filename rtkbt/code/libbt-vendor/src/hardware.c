@@ -27,7 +27,7 @@
  ******************************************************************************/
 
 #define LOG_TAG "bt_hwcfg"
-#define RTKBT_RELEASE_NAME "20190520rk01_BT_ANDROID_9.0"
+#define RTKBT_RELEASE_NAME "20200318_BT_ANDROID_10.0rk"
 
 #include <utils/Log.h>
 #include <sys/types.h>
@@ -96,7 +96,7 @@ int getmacaddr(unsigned char * addr)
     int addr_fd;
 
     char property[100] = {0};
-    if (property_get("persist.vendor.rtkbt.bdaddr_path", property, "default")) {
+    if (property_get("persist.vendor.rtkbt.bdaddr_path", property, "none")) {
         if(strcmp(property, "none") == 0) {
             return -1;
         }

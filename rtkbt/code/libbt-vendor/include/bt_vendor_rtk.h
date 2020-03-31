@@ -50,7 +50,7 @@
 #include <cutils/properties.h>
 #include "rtk_common.h"
 
-#define RTK_VERSION "5.0.1"
+#define RTK_VERSION "5.1.1"
 /******************************************************************************
 **  Constants & Macros
 ******************************************************************************/
@@ -116,7 +116,7 @@
  *  firmware patchram (.hcd) file.
  */
 #ifndef USE_CONTROLLER_BDADDR
-#define USE_CONTROLLER_BDADDR   FALSE
+#define USE_CONTROLLER_BDADDR   TRUE
 #endif
 
 /* sleep mode
