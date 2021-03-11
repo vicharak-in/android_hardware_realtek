@@ -26,7 +26,7 @@
 
 #undef NDEBUG
 #define LOG_TAG "libbt_vendor"
-#define RTKBT_RELEASE_NAME "20200318_BT_ANDROID_10.0"
+#define RTKBT_RELEASE_NAME "20201130_BT_ANDROID_11.0"
 #include <utils/Log.h>
 #include "bt_vendor_rtk.h"
 #include "upio.h"
@@ -220,20 +220,12 @@ static void load_rtkbt_stack_conf()
         else if(!strcmp(rtk_trim(line_ptr), "H5LogOutput")) {
             h5_log_enable = strtol(rtk_trim(split+1), &endptr, 0);
         }
-        else if(!strcmp(rtk_trim(line_ptr), "RtkBtsnoopDump")) {
-            if(!strcmp(rtk_trim(split+1), "true"))
-                rtk_btsnoop_dump = true;
-        }
         else if(!strcmp(rtk_trim(line_ptr), "RtkBtsnoopNetDump")) {
             if(!strcmp(rtk_trim(split+1), "true"))
                 rtk_btsnoop_net_dump = true;
         }
         else if(!strcmp(rtk_trim(line_ptr), "BtSnoopFileName")) {
             sprintf(rtk_btsnoop_path, "%s_rtk", rtk_trim(split+1));
-        }
-        else if(!strcmp(rtk_trim(line_ptr), "BtSnoopSaveLog")) {
-            if(!strcmp(rtk_trim(split+1), "true"))
-                rtk_btsnoop_save_log = true;
         }
         else if(!strcmp(rtk_trim(line_ptr), "BtCoexLogOutput")) {
             coex_log_enable = strtol(rtk_trim(split+1), &endptr, 0);
@@ -355,6 +347,7 @@ static int init(const bt_vendor_callbacks_t* p_cb, unsigned char *local_bdaddr)
     ALOGI("RTKBT_RELEASE_NAME: %s",RTKBT_RELEASE_NAME);
     ALOGI("init");
 
+    char value[100];
     load_rtkbt_conf();
     load_rtkbt_stack_conf();
     if (p_cb == NULL)
@@ -378,6 +371,17 @@ static int init(const bt_vendor_callbacks_t* p_cb, unsigned char *local_bdaddr)
     memcpy(vnd_local_bd_addr, local_bdaddr, 6);
     byte_reverse(vnd_local_bd_addr, 6);
 
+    property_get("persist.vendor.btsnoop.enable", value, "false");
+    if(strncmp(value, "true", 4) == 0) {
+        rtk_btsnoop_dump = true;
+    }
+
+    property_get("persist.vendor.btsnoopsavelog", value, "false");
+    if(strncmp(value, "true", 4) == 0) {
+        rtk_btsnoop_save_log = true;
+    }
+
+    ALOGE("rtk_btsnoop_dump = %d, rtk_btsnoop_save_log = %d", rtk_btsnoop_dump, rtk_btsnoop_save_log);
     if(rtk_btsnoop_dump)
         rtk_btsnoop_open();
     if(rtk_btsnoop_net_dump)
@@ -399,6 +403,7 @@ static int op(bt_vendor_opcode_t opcode, void *param)
     {
         case BT_VND_OP_POWER_CTRL:
             {
+				// modify by rk start
                 //if(rtkbt_transtype & RTKBT_TRANS_UART)
                 {
                     int *state = (int *) param;
@@ -421,6 +426,7 @@ static int op(bt_vendor_opcode_t opcode, void *param)
                         BTVNDDBG("set power on and delay 1000ms");
                     }
                 }
+				// modify by rk end
             }
             break;
 

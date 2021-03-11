@@ -27,7 +27,7 @@
  ******************************************************************************/
 
 #define LOG_TAG "bt_hwcfg"
-#define RTKBT_RELEASE_NAME "20200318_BT_ANDROID_10.0rk"
+#define RTKBT_RELEASE_NAME "20201130_BT_ANDROID_11.0"
 
 #include <utils/Log.h>
 #include <sys/types.h>
@@ -96,6 +96,7 @@ int getmacaddr(unsigned char * addr)
     int addr_fd;
 
     char property[100] = {0};
+	// modify by rk start
     if (property_get("persist.vendor.rtkbt.bdaddr_path", property, "default")) {
         if(strcmp(property, "none") == 0) {
             return -1;
@@ -208,6 +209,7 @@ uint8_t get_heartbeat_from_hardware()
     return hw_cfg_cb.heartbeat;
 }
 
+// modify by rk start
 uint16_t getLmp_subversion()
 {
     return hw_cfg_cb.lmp_subversion;

@@ -92,8 +92,8 @@ void rtk_btsnoop_open()
     if(rtk_btsnoop_save_log) {
         time_t current_time = time(NULL);
         struct tm* time_created = localtime(&current_time);
-        char config_time_created[sizeof("YYYY-MM-DD-HH:MM:SS")];
-        strftime(config_time_created, sizeof("YYYY-MM-DD-HH:MM:SS"), "%Y-%m-%d-%H:%M:%S",
+        char config_time_created[sizeof("YYYY-MM-DD-HH-MM-SS")];
+        strftime(config_time_created, sizeof("YYYY-MM-DD-HH-MM-SS"), "%Y-%m-%d-%H-%M-%S",
              time_created);
         timestamp = rtk_btsnoop_timestamp() - BTSNOOP_EPOCH_DELTA;
         usec = (uint32_t)(timestamp % 1000000LL);

@@ -17,7 +17,7 @@
  ******************************************************************************/
 
 #define LOG_TAG "bt_hwcfg_uart"
-#define RTKBT_RELEASE_NAME "20200318_BT_ANDROID_10.0"
+#define RTKBT_RELEASE_NAME "20201130_BT_ANDROID_11.0"
 
 #include <utils/Log.h>
 #include <sys/types.h>
@@ -104,7 +104,7 @@ static patch_info patch_table[] = {
 /*    lmp_subv                      hci_version_mask                    hci_revision_mask                chip_type_mask              project_id_mask                 fw name                                 config name                         mac offset                         max_patch_size  */
     {0x1200,            HCI_VERSION_MASK_ALL,    HCI_REVISION_MASK_ALL, CHIP_TYPE_MASK_ALL,  1<<0,                  "rtl8723as_fw",         "rtl8723as_config",     CONFIG_MAC_OFFSET_GEN_1_2,  MAX_PATCH_SIZE_24K},    //Rtl8723AS
 
-    {0x8723,            ~(HCI_VERSION_MASK_21),  ~(1<<0xd),             CHIP_TYPE_MASK_ALL,  1<<1,                  "rtl8723bs_fw",         "rtl8723bs_config",     CONFIG_MAC_OFFSET_GEN_1_2,  MAX_PATCH_SIZE_24K},     //Rtl8723BS
+    {0x8723,            HCI_VERSION_MASK_ALL,    (1<<0xb),             CHIP_TYPE_MASK_ALL,  1<<1,                  "rtl8723bs_fw",         "rtl8723bs_config",     CONFIG_MAC_OFFSET_GEN_1_2,  MAX_PATCH_SIZE_24K},     //Rtl8723BS
 //    {0x8723,            ~(HCI_VERSION_MASK_21),  ~(1<<0xd),             CHIP_TYPE_MASK_ALL,  1<<1,                  "rtl8723bs_VQ0_fw",     "rtl8723bs_VQ0_config", CONFIG_MAC_OFFSET_GEN_1_2}, //Rtl8723BS_VQ0
     {0x8821,            HCI_VERSION_MASK_ALL,    ~(1<<0xc),             CHIP_TYPE_MASK_ALL,  1<<2,                  "rtl8821as_fw",         "rtl8821as_config",     CONFIG_MAC_OFFSET_GEN_1_2,  MAX_PATCH_SIZE_24K},     //Rtl8821AS
 //  {0x8761,            HCI_VERSION_MASK_ALL,    HCI_REVISION_MASK_ALL, CHIP_TYPE_MASK_ALL,  1<<3,                  "rtl8761at_fw",         "rtl8761at_config",     CONFIG_MAC_OFFSET_GEN_1_2,  MAX_PATCH_SIZE_24K},     //Rtl8761AW
@@ -124,8 +124,10 @@ static patch_info patch_table[] = {
 
 
     {0x8723,            HCI_VERSION_MASK_ALL,    (1<<0xd),              ~(1<<7),           1<<9,                    "rtl8723ds_fw",         "rtl8723ds_config",     CONFIG_MAC_OFFSET_GEN_3PLUS,  MAX_PATCH_SIZE_40K}, //Rtl8723ds
+    {0x8723,            HCI_VERSION_MASK_ALL,    (1<<0xf),              CHIP_TYPE_MASK_ALL,  1<<19,                 "rtl8723fs_fw",         "rtl8723fs_config",     CONFIG_MAC_OFFSET_GEN_3PLUS,  MAX_PATCH_SIZE_40K}, //Rtl8723fs
     {0x8723,            HCI_VERSION_MASK_ALL,    (1<<0xd),              1<<7,              1<<9,                    "rtl8703cs_fw",         "rtl8703cs_config",     CONFIG_MAC_OFFSET_GEN_3PLUS,  MAX_PATCH_SIZE_40K}, //Rtl8703cs
     {0x8821,            HCI_VERSION_MASK_ALL,    (1<<0xc),              CHIP_TYPE_MASK_ALL,  1<<10,                 "rtl8821cs_fw",         "rtl8821cs_config",     CONFIG_MAC_OFFSET_GEN_3PLUS,  MAX_PATCH_SIZE_40K}, //RTL8821CS
+    {0x8852,            HCI_VERSION_MASK_ALL,    (1<<0xa),              CHIP_TYPE_MASK_ALL,	 1<<18,                 "rtl8852as_fw",         "rtl8852as_config",     CONFIG_MAC_OFFSET_GEN_4PLUS,  MAX_PATCH_SIZE_40K}, //Rtl8852AS
 /*  todo: RTL8703CS */
 
     {LMP_SUBVERSION_NONE,HCI_VERSION_MASK_ALL,   HCI_REVISION_MASK_ALL, CHIP_TYPE_MASK_ALL, PROJECT_ID_MASK_ALL,    "rtl_none_fw",          "rtl_none_config",      CONFIG_MAC_OFFSET_GEN_1_2,  MAX_PATCH_SIZE_24K}

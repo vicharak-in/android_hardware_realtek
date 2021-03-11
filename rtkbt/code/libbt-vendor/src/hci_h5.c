@@ -61,6 +61,7 @@
 ******************************************************************************/
 #define H5_TRACE_DATA_ENABLE 0//if you want to see data tx and rx, set H5_TRACE_DATA_ENABLE 1
 #define H5_LOG_VERBOSE      0
+// modify by rk start
 #define ENABLE_BLE_8703 1
 
 unsigned int h5_log_enable = 1;
@@ -1218,6 +1219,7 @@ static void rtk_notify_hw_h5_init_result(uint8_t status)
     pthread_cond_signal(&rtk_h5.data_cond);
     pthread_mutex_unlock(&rtk_h5.data_mutex);
 }
+// modify by rk start
 static uint8_t *acl_pack = NULL;
 static uint32_t acl_len=0;
 static uint8_t loopbackmode = 0x00;
@@ -1495,6 +1497,7 @@ uint8_t isRtkInternalCommand(uint16_t opcode)
 * @param skb socket buffer
 *
 */
+// modify by rk start
 extern uint16_t getLmp_subversion();
 extern uint8_t getchip_type();
 
@@ -1573,6 +1576,7 @@ static uint8_t hci_recv_frame(sk_buff *skb, uint8_t pkt_type)
         event_code = *p++;
         len = *p++;
         H5LogMsg("hci_recv_frame event_code(0x%x), len = %d", event_code, len);
+		// modify by rk start
         if(event_code == HCI_COMMAND_STATUS_EVT && len==0x04
 		    && p[0]==0x01 && p[1]==0x02 && p[2]==0xff && p[3]==0x3b){
             *( p-2) = HCI_COMMAND_COMPLETE_EVT;
@@ -1655,6 +1659,7 @@ static uint8_t hci_recv_frame(sk_buff *skb, uint8_t pkt_type)
                 H5LogMsg("CommandCompleteEvent for command h5_start_wait_controller_baudrate_ready_timer (0x%04X)", opcode);
                 h5_start_wait_controller_baudrate_ready_timer();
             }
+			// modify by rk start
         }else if(event_code == 0xff ){
            intercepted = 1;
            skb_free(&skb);
@@ -2360,6 +2365,7 @@ uint16_t hci_h5_send_cmd(serial_data_type_t type, uint8_t *data, uint16_t length
         H5LogMsg("RX HCI RESET Command, stop hw init timer");
         h5_stop_hw_init_ready_timer();
     }
+	// modify by rk start
     if(opcode == HCI_WRITE_LOOPBACK_MODE)
         loopbackmode = 0x01;
 	#if ENABLE_BLE_8703
@@ -2386,6 +2392,7 @@ uint16_t hci_h5_send_acl_data(serial_data_type_t type, uint8_t *data, uint16_t l
 {
     uint16_t bytes_to_send;//, lay_spec;
     sk_buff * skb = NULL;
+	// modify by rk start
     if(loopbackmode == 1){
         acl_len = length;
         if(!acl_pack)
