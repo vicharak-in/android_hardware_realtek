@@ -209,9 +209,12 @@ public:
     int put_addr(int attribute, mac_addr value) {
         return nla_put(mMsg, attribute, sizeof(mac_addr), value);
     }
-
-    struct nlattr * attr_start(int attribute) {
+    struct nlattr * nest_attr_start(int attribute) {
         return nla_nest_start(mMsg, attribute);
+    }
+    struct nlattr * attr_start(int attribute) {
+        struct nlattr *start = nla_reserve(mMsg, attribute, 0);
+        return start;
     }
     void attr_end(struct nlattr *attr) {
         nla_nest_end(mMsg, attr);

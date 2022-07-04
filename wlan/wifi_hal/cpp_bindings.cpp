@@ -611,7 +611,7 @@ int WifiCommand::requestResponse(WifiRequest& request) {
     if (!cb)
         goto out;
 
-    err = nl_send_auto_complete(mInfo->cmd_sock, request.getMessage());    /* send message */
+    err = nl_send_auto(mInfo->cmd_sock, request.getMessage());    /* send message */
     if (err < 0)
         goto out;
 
