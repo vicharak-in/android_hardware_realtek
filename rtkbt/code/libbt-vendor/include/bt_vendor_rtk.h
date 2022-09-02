@@ -54,8 +54,12 @@
 /******************************************************************************
 **  Constants & Macros
 ******************************************************************************/
+//for mesh
+//#define VENDOR_MESH_RTK
+
 #define RTKBT_TRANS_H4          0x20
 #define RTKBT_TRANS_H5          0x10
+#define RTKBT_TRANS_H45         0x40
 #define RTKBT_TRANS_UART        0x01
 #define RTKBT_TRANS_USB         0x02
 
@@ -87,12 +91,12 @@
 
 /* Device port name where Bluetooth controller attached */
 #ifndef BLUETOOTH_UART_DEVICE_PORT
-#define BLUETOOTH_UART_DEVICE_PORT      "/dev/ttyS1"    /* maguro */
+#define BLUETOOTH_UART_DEVICE_PORT      "/dev/ttyO1"    /* maguro */
 #endif
 
 /* Location of firmware patch files */
 #ifndef FW_PATCHFILE_LOCATION
-#define FW_PATCHFILE_LOCATION "/vendor/etc/firmware/"  /* maguro */
+#define FW_PATCHFILE_LOCATION "/vendor/firmware/"  /* maguro */
 #endif
 
 #ifndef UART_TARGET_BAUD_RATE
@@ -116,7 +120,7 @@
  *  firmware patchram (.hcd) file.
  */
 #ifndef USE_CONTROLLER_BDADDR
-#define USE_CONTROLLER_BDADDR   TRUE
+#define USE_CONTROLLER_BDADDR   TRUE //FALSE
 #endif
 
 /* sleep mode
