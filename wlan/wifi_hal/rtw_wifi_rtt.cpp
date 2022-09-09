@@ -343,14 +343,14 @@ public:
             return result;
         }
 
-        nlattr *data = request.attr_start(NL80211_ATTR_VENDOR_DATA);
+        nlattr *data = request.nest_attr_start(NL80211_ATTR_VENDOR_DATA);
         result = request.put_u8(RTT_ATTRIBUTE_TARGET_CNT, numRttParams);
         if (result < 0) {
             return result;
         }
-        nlattr *rtt_config = request.attr_start(RTT_ATTRIBUTE_TARGET_INFO);
+        nlattr *rtt_config = request.nest_attr_start(RTT_ATTRIBUTE_TARGET_INFO);
         for (unsigned i = 0; i < numRttParams; i++) {
-            nlattr *attr2 = request.attr_start(i);
+            nlattr *attr2 = request.nest_attr_start(i);
             if (attr2 == NULL) {
                 return WIFI_ERROR_OUT_OF_MEMORY;
             }

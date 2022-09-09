@@ -907,20 +907,21 @@ class AndroidPktFilterCommand : public WifiCommand {
         NULL_CHECK_RETURN(program, "memory allocation failure", WIFI_ERROR_OUT_OF_MEMORY);
         int result = request.create(GOOGLE_OUI, APF_SUBCMD_SET_FILTER);
         if (result < 0) {
+            delete[] program;
             return result;
         }
 
         nlattr *data = request.attr_start(NL80211_ATTR_VENDOR_DATA);
         result = request.put_u32(APF_ATTRIBUTE_PROGRAM_LEN, mProgramLen);
         if (result < 0) {
-            return result;
+            goto exit;
         }
         memcpy(program, mProgram, mProgramLen);
         result = request.put(APF_ATTRIBUTE_PROGRAM, program, mProgramLen);
         if (result < 0) {
-            return result;
+            goto exit;
         }
-        request.attr_end(data);
+exit:   request.attr_end(data);
         delete[] program;
         return result;
     }
@@ -1144,7 +1145,7 @@ static int wifi_get_multicast_id(wifi_handle handle, const char *name, const cha
 
 static bool is_wifi_interface(const char *name)
 {
-    if (strncmp(name, "wlan", 4) != 0 && strncmp(name, "p2p", 3) != 0) {
+    if (strncmp(name, "wlan", 4) != 0 && strncmp(name, "p2p", 3) != 0 && strncmp(name, "ap", 2) != 0) {
         /* not a wifi interface; ignore it */
         return false;
     } else {

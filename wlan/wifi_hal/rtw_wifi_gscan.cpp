@@ -345,8 +345,13 @@ static int parseScanResults(wifi_scan_result *results, int num, nlattr *attr)
         for (nl_iterator it2(sc_data); it2.has_next(); it2.next()) {
             int type = it2.get_type();
             if (type == GSCAN_ATTRIBUTE_SSID) {
-                strncpy(result->ssid, (char *) it2.get_data(), it2.get_len());
-                result->ssid[it2.get_len()] = 0;
+                if (it2.get_len() < DOT11_MAX_SSID_LEN + 1) {
+                    strncpy(result->ssid, (char *) it2.get_data(), it2.get_len());
+                    result->ssid[it2.get_len()] = 0;
+                } else {
+                    strncpy(result->ssid, (char *) it2.get_data(), DOT11_MAX_SSID_LEN);
+                    result->ssid[DOT11_MAX_SSID_LEN] = 0;
+                }
             } else if (type == GSCAN_ATTRIBUTE_BSSID) {
                 memcpy(result->bssid, (byte *) it2.get_data(), sizeof(mac_addr));
             } else if (type == GSCAN_ATTRIBUTE_TIMESTAMP) {
@@ -485,7 +490,7 @@ public:
             return result;
         }
 
-        nlattr *data = request.attr_start(NL80211_ATTR_VENDOR_DATA);
+        nlattr *data = request.nest_attr_start(NL80211_ATTR_VENDOR_DATA);
         result = request.put_u32(GSCAN_ATTRIBUTE_BASE_PERIOD, mParams->base_period);
         if (result < 0) {
             return result;
@@ -497,7 +502,7 @@ public:
         }
 
         for (int i = 0; i < mParams->num_buckets; i++) {
-            nlattr * bucket = request.attr_start(i);    // next bucket
+            nlattr * bucket = request.nest_attr_start(i);    // next bucket
             result = request.put_u32(GSCAN_ATTRIBUTE_BUCKET_ID, mParams->buckets[i].bucket);
             if (result < 0) {
                 return result;
@@ -534,7 +539,7 @@ public:
             }
 
             if (mParams->buckets[i].num_channels) {
-                nlattr *channels = request.attr_start(GSCAN_ATTRIBUTE_BUCKET_CHANNELS);
+                nlattr *channels = request.nest_attr_start(GSCAN_ATTRIBUTE_BUCKET_CHANNELS);
                 ALOGV(" channels: ");
                 for (int j = 0; j < mParams->buckets[i].num_channels; j++) {
                     result = request.put_u32(j, mParams->buckets[i].channels[j].channel);
@@ -1025,7 +1030,7 @@ public:
             return result;
         }
 
-        nlattr *data = request.attr_start(NL80211_ATTR_VENDOR_DATA);
+        nlattr *data = request.nest_attr_start(NL80211_ATTR_VENDOR_DATA);
         result = request.put_u8(GSCAN_ATTRIBUTE_HOTLIST_FLUSH, 1);
         if (result < 0) {
             return result;
@@ -1041,9 +1046,9 @@ public:
             return result;
         }
 
-        struct nlattr * attr = request.attr_start(GSCAN_ATTRIBUTE_HOTLIST_BSSIDS);
+        struct nlattr * attr = request.nest_attr_start(GSCAN_ATTRIBUTE_HOTLIST_BSSIDS);
         for (int i = 0; i < mParams.num_bssid; i++) {
-            nlattr *attr2 = request.attr_start(GSCAN_ATTRIBUTE_HOTLIST_ELEM);
+            nlattr *attr2 = request.nest_attr_start(GSCAN_ATTRIBUTE_HOTLIST_ELEM);
             if (attr2 == NULL) {
                 return WIFI_ERROR_OUT_OF_MEMORY;
             }
@@ -1073,13 +1078,13 @@ public:
             return result;
         }
 
-        nlattr *data = request.attr_start(NL80211_ATTR_VENDOR_DATA);
+        nlattr *data = request.nest_attr_start(NL80211_ATTR_VENDOR_DATA);
         result = request.put_u8(GSCAN_ATTRIBUTE_HOTLIST_FLUSH, 1);
         if (result < 0) {
             return result;
         }
 
-        struct nlattr * attr = request.attr_start(GSCAN_ATTRIBUTE_HOTLIST_BSSIDS);
+        struct nlattr * attr = request.nest_attr_start(GSCAN_ATTRIBUTE_HOTLIST_BSSIDS);
         request.attr_end(attr);
         request.attr_end(data);
         return result;
@@ -1207,7 +1212,7 @@ public:
         if (result < 0) {
             return result;
         }
-        nlattr *data = request.attr_start(NL80211_ATTR_VENDOR_DATA);
+        nlattr *data = request.nest_attr_start(NL80211_ATTR_VENDOR_DATA);
         result = request.put_u8(GSCAN_ATTRIBUTE_EPNO_FLUSH, 1);
         if (result < 0) {
             return result;
@@ -1253,10 +1258,10 @@ public:
         if (result < 0) {
             return result;
         }
-        struct nlattr * attr = request.attr_start(GSCAN_ATTRIBUTE_EPNO_SSID_LIST);
+        struct nlattr * attr = request.nest_attr_start(GSCAN_ATTRIBUTE_EPNO_SSID_LIST);
         wifi_epno_network *ssid_list = epno_params.networks;
         for (int i = 0; i < epno_params.num_networks; i++) {
-            nlattr *attr2 = request.attr_start(i);
+            nlattr *attr2 = request.nest_attr_start(i);
             if (attr2 == NULL) {
                 return WIFI_ERROR_OUT_OF_MEMORY;
             }
@@ -1438,7 +1443,7 @@ public:
             return result;
         }
 
-        nlattr *data = request.attr_start(NL80211_ATTR_VENDOR_DATA);
+        nlattr *data = request.nest_attr_start(NL80211_ATTR_VENDOR_DATA);
         result = request.put_u8(GSCAN_ATTRIBUTE_SIGNIFICANT_CHANGE_FLUSH, 1);
         if (result < 0) {
             return result;
@@ -1460,13 +1465,13 @@ public:
             return result;
         }
         if (mParams.num_bssid != 0) {
-            nlattr* attr = request.attr_start(GSCAN_ATTRIBUTE_SIGNIFICANT_CHANGE_BSSIDS);
+            nlattr* attr = request.nest_attr_start(GSCAN_ATTRIBUTE_SIGNIFICANT_CHANGE_BSSIDS);
             if (attr == NULL) {
                 return WIFI_ERROR_OUT_OF_MEMORY;
             }
 
             for (int i = 0; i < mParams.num_bssid; i++) {
-                nlattr* attr2 = request.attr_start(i);
+                nlattr* attr2 = request.nest_attr_start(i);
                 if (attr2 == NULL) {
                     return WIFI_ERROR_OUT_OF_MEMORY;
                 }
@@ -1700,11 +1705,11 @@ public:
             return result;
         }
 
-        nlattr *data = request.attr_start(NL80211_ATTR_VENDOR_DATA);
+        nlattr *data = request.nest_attr_start(NL80211_ATTR_VENDOR_DATA);
 
-        struct nlattr * attr = request.attr_start(GSCAN_ATTRIBUTE_ANQPO_HS_LIST);
+        struct nlattr * attr = request.nest_attr_start(GSCAN_ATTRIBUTE_ANQPO_HS_LIST);
         for (int i = 0; i < num_hs; i++) {
-            nlattr *attr2 = request.attr_start(i);
+            nlattr *attr2 = request.nest_attr_start(i);
             if (attr2 == NULL) {
                 return WIFI_ERROR_OUT_OF_MEMORY;
             }
