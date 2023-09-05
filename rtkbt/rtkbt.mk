@@ -1,11 +1,11 @@
-# RELEASE NAME: 20220324_BT_ANDROID_12.0
+# RELEASE NAME: 20230720_BT_ANDROID_12.0
 # RTKBT_API_VERSION=2.1.1.0
-
-CUR_PATH := hardware/realtek/rtkbt
 
 BOARD_HAVE_BLUETOOTH := true
 BOARD_HAVE_BLUETOOTH_RTK := true
 BOARD_HAVE_BLUETOOTH_RTK_TV := false
+
+CUR_PATH := hardware/realtek/rtkbt
 
 ifeq ($(BOARD_HAVE_BLUETOOTH_RTK_TV), true)
 #Firmware For Tv
@@ -30,9 +30,8 @@ endif
 
 # base bluetooth
 PRODUCT_PACKAGES += \
-    libbt-vendor-realtek \
     Bluetooth \
-    libbt-vendor \
+    libbt-vendor-realtek \
     audio.a2dp.default \
     bluetooth.default \
     android.hardware.bluetooth@1.0-impl \

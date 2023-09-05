@@ -19,6 +19,7 @@ LOCAL_SRC_FILES := \
         hardware_usb.c \
         rtk_heartbeat.c \
         rtk_poll.c \
+        hci_h5_snoop.c \
         rtk_btsnoop_net.c
 
 LOCAL_C_INCLUDES += \

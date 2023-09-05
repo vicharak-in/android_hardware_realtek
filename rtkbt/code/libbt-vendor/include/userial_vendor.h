@@ -99,6 +99,9 @@
 #endif
 #endif // (BT_WAKE_VIA_USERIAL_IOCTL==TRUE)
 
+
+#define MSG_HC_TO_STACK_HCI_ISO 0x1700      /* eq. BT_EVT_TO_BTU_HCI_ISO */
+#define MSG_STACK_TO_HC_HCI_ISO 0x2d00      /* eq. BT_EVT_TO_LM_HCI_ISO */
 /******************************************************************************
 **  Type definitions
 ******************************************************************************/
@@ -110,7 +113,8 @@ typedef struct
     uint8_t hw_fctrl; /*hardware flowcontrol*/
 } tUSERIAL_CFG;
 
-typedef enum {
+typedef enum
+{
 #if (BT_WAKE_VIA_USERIAL_IOCTL==TRUE)
     USERIAL_OP_ASSERT_BT_WAKE,
     USERIAL_OP_DEASSERT_BT_WAKE,
@@ -119,7 +123,8 @@ typedef enum {
     USERIAL_OP_NOP,
 } userial_vendor_ioctl_op_t;
 
-enum {
+enum
+{
     RTKBT_PACKET_IDLE,
     RTKBT_PACKET_TYPE,
     RTKBT_PACKET_HEADER,
@@ -194,7 +199,7 @@ void userial_vendor_set_hw_fctrl(uint8_t hw_fctrl);
 
 int userial_socket_open(void);
 
-int userial_vendor_usb_ioctl(int operation, void* param);
+int userial_vendor_usb_ioctl(int operation, void *param);
 
 int userial_vendor_usb_open(void);
 

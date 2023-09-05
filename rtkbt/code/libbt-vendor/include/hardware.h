@@ -19,6 +19,7 @@
 #ifndef HARDWARE_H
 #define HARDWARE_H
 
+//#define TEST_NEW_CHIP
 #if __BYTE_ORDER == __LITTLE_ENDIAN
 #define cpu_to_le16(d)  (d)
 #define cpu_to_le32(d)  (d)
@@ -35,30 +36,38 @@
 
 #define FIRMWARE_DIRECTORY  "/vendor/firmware/%s"
 #define BT_CONFIG_DIRECTORY "/vendor/firmware/%s"
+#ifdef  TEST_NEW_CHIP
+#define TEST_FIRMWARE_NAME  "rtlbt_fw"
+#define TEST_CONFIG_NAME    "rtlbt_config"
+#endif
+
 #define PATCH_DATA_FIELD_MAX_SIZE       252
 #define RTK_VENDOR_CONFIG_MAGIC         0x8723ab55
 #define MAX_PATCH_SIZE_24K            (1024*24 + 529)   //24K
 #define MAX_PATCH_SIZE_25K            (1024*25 + 529)   //25K for rtl8822b
 #define MAX_PATCH_SIZE_40K            (1024*40 + 529)   //40K
-#define MAX_PATCH_SIZE_49_2K          (0xC4Cf + 529)   //49.2K 8723f
+#define MAX_PATCH_SIZE_49_2K          (0xC4CF + 529)   //49.2K 8723f
 #define MAX_PATCH_SIZE_69_2K          (0x114D0 + 529)  //69.2K 8852a
 #define MAX_PATCH_SIZE_65_2K          (0x104D0 + 529)   //65.2K 8852b
+#define MAX_PATCH_SIZE_78K            (1024*78 + 529)   //78K  8852c
 #define MAX_PATCH_SIZE_145K           (0x24620)        //145K 8822E
 
 #define MAX_ORG_CONFIG_SIZE     (0x100*14)
 #define MAX_ALT_CONFIG_SIZE     (0x100*2)
 
-struct rtk_bt_vendor_config_entry{
+struct rtk_bt_vendor_config_entry
+{
     uint16_t offset;
     uint8_t entry_len;
     uint8_t entry_data[0];
-} __attribute__ ((packed));
+} __attribute__((packed));
 
-struct rtk_bt_vendor_config{
+struct rtk_bt_vendor_config
+{
     uint32_t signature;
     uint16_t data_len;
     struct rtk_bt_vendor_config_entry entry[0];
-} __attribute__ ((packed));
+} __attribute__((packed));
 
 #define HCI_CMD_MAX_LEN             258
 
@@ -122,7 +131,8 @@ struct rtk_bt_vendor_config{
 ******************************************************************************/
 
 /* Hardware Configuration State */
-enum {
+enum
+{
     HW_CFG_H5_INIT = 1,
     HW_CFG_READ_LOCAL_VER,
     HW_CFG_READ_ECO_VER,   //eco version
@@ -135,6 +145,7 @@ enum {
     HW_RESET_CONTROLLER,
     HARDWARE_INIT_COMPLETE,
     HW_CFG_DL_FW_PATCH,
+    HW_VENDOR_WRITE,
     HW_CFG_READ_KEY_ID,
     HW_CFG_READ_FC61_LMP_SUB,//8822e initialize
     HW_CFG_READ_FC61_HCI_SUB,
@@ -157,13 +168,13 @@ typedef struct
     uint8_t     chip_type;
     uint8_t     dl_fw_flag;
     int         fw_len;          /* FW patch file len */
-    size_t         config_len;      /* Config patch file len */
+    size_t      config_len;      /* Config patch file len */
     unsigned int         total_len;       /* FW & config extracted buf len */
     uint8_t     *fw_buf;         /* FW patch file buf */
     uint8_t     *config_buf;     /* Config patch file buf */
     uint8_t     *total_buf;      /* FW & config extracted buf */
-    uint8_t     patch_frag_cnt;  /* Patch fragment count download */
-    uint8_t     patch_frag_idx;  /* Current patch fragment index */
+    uint16_t     patch_frag_cnt;  /* Patch fragment count download */
+    uint16_t     patch_frag_idx;  /* Current patch fragment index */
     uint8_t     patch_frag_len;  /* Patch fragment length */
     uint8_t     patch_frag_tail; /* Last patch fragment length */
     uint8_t     hw_flow_cntrl;   /* Uart flow control, bit7:set, bit0:enable */
@@ -171,7 +182,8 @@ typedef struct
     uint16_t    pid;   /* usb product id */
     uint8_t     heartbeat; /*heartbeat*/
     uint8_t     parsing_rule; /* fw merge rule 1: v1, 2: v2 */
-    uint8_t     keyid; /*  */
+    uint8_t     keyid; /* fw merge rule 1: v1, 2: v2 */
+    bool        en_pwr_whtl;
 } bt_hw_cfg_cb_t;
 
 /* low power mode parameters */
@@ -218,6 +230,7 @@ typedef struct
 #define ROM_LMP_8851b               0x8851
 #define ROM_LMP_8822e               0x8822
 
+#define HCI_VERSION_5_3             0x000C
 #define HCI_VERSION_5_2             0x000B
 #define HCI_VERSION_5_1             0x000A
 #define HCI_VERSION_5_0             0x0009
@@ -226,56 +239,62 @@ typedef struct
 #define HCI_VERSION_4_0             0x0006
 #define HCI_VERSION_2_1             0x0004
 
-struct rtk_epatch_entry{
+struct rtk_epatch_entry
+{
     uint16_t chip_id;
     uint16_t patch_length;
     uint32_t patch_offset;
     uint32_t svn_version;
     uint32_t coex_version;
-} __attribute__ ((packed));
+} __attribute__((packed));
 
-struct rtk_epatch{
+struct rtk_epatch
+{
     uint8_t signature[8];
     uint32_t fw_version;
     uint16_t number_of_patch;
     struct rtk_epatch_entry entry[0];
-} __attribute__ ((packed));
+} __attribute__((packed));
 
-struct rtk_epatch_ota{
+struct rtk_epatch_ota
+{
     uint8_t chip_id;
     uint8_t enable;
     uint16_t reserve;
-} __attribute__ ((packed));
+} __attribute__((packed));
 
-struct rtk_epatch_fragment{
+struct rtk_epatch_fragment
+{
     uint8_t chip_id;
     uint8_t priority;
     uint8_t key_id;
     uint8_t reserve;
     uint32_t length;
     uint8_t  data[0];
-} __attribute__ ((packed));
+} __attribute__((packed));
 
-struct rtk_epatch_section{
+struct rtk_epatch_section
+{
     uint32_t opcode;
     uint32_t length;
     uint16_t number_of_fragment;
     uint16_t reserve;
     struct rtk_epatch_fragment fragment[0];
-} __attribute__ ((packed));
+} __attribute__((packed));
 
-struct rtk_epatch_v2{
+struct rtk_epatch_v2
+{
     uint8_t signature[8];
     uint32_t fw_version;
     uint32_t fw_version_sub;
-    uint16_t number_of_section;
+    uint32_t number_of_section;
     struct rtk_epatch_section section[0];
-} __attribute__ ((packed));
+} __attribute__((packed));
 
-struct rtk_epatch_fragment_linklist{
+struct rtk_epatch_fragment_linklist
+{
     struct rtk_epatch_fragment *fragment;
-    struct rtk_epatch_fragment_linklist * next;
-} __attribute__ ((packed));
-
+    struct rtk_epatch_fragment_linklist *next;
+} __attribute__((packed));
 
 #endif
