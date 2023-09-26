@@ -15,10 +15,14 @@ else
 include $(CUR_PATH)/Firmware/BT/BT_Firmware.mk
 endif
 
+ifeq ($(filter vaaman%, $(TARGET_PRODUCT)), )
 BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := $(CUR_PATH)/bluetooth
 
 PRODUCT_COPY_FILES += \
-       $(CUR_PATH)/vendor/etc/bluetooth/rtkbt.conf:vendor/etc/bluetooth/rtkbt.conf \
+       $(CUR_PATH)/vendor/etc/bluetooth/rtkbt.conf:vendor/etc/bluetooth/rtkbt.conf
+endif
+
+PRODUCT_COPY_FILES += \
        $(CUR_PATH)/system/etc/permissions/android.hardware.bluetooth_le.xml:system/etc/permissions/android.hardware.bluetooth_le.xml \
        $(CUR_PATH)/system/etc/permissions/android.hardware.bluetooth.xml:system/etc/permissions/android.hardware.bluetooth.xml \
 
