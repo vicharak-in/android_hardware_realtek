@@ -15,8 +15,8 @@ else
 include $(CUR_PATH)/Firmware/BT/BT_Firmware.mk
 endif
 
-ifeq ($(filter vaaman%, $(TARGET_PRODUCT)), )
-BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := $(CUR_PATH)/bluetooth
+ifeq ($(filter vaaman% axon%, $(TARGET_PRODUCT)), )
+BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR:= $(CUR_PATH)/bluetooth
 
 PRODUCT_COPY_FILES += \
        $(CUR_PATH)/vendor/etc/bluetooth/rtkbt.conf:vendor/etc/bluetooth/rtkbt.conf
